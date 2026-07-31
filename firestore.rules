@@ -1,0 +1,164 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * Core Philosophy: This ruleset enforces a strict user-ownership model.
+     * All data is considered private to the user who created it, ensuring
+     * strong data isolation between users.
+     *
+     * Data Structure: The data is organized hierarchically. All user-specific
+     * data, such as game sessions and AI recommendations, is nested within a
+     * subcollection under that user's profile document in the top-level
+     * `/users` collection. For example: `/users/{userId}/gameSessions/{sessionId}`.
+     *
+     * Key Security Decisions:
+     * - User Listing Disabled: Listing all documents in the top-level `/users`
+     *   collection is explicitly disallowed to protect user privacy.
+     * - Path-Based Security: Authorization is determined primarily by the document's
+     *   path. This avoids costly and slow `get()` calls in rules, making them
+     *   more performant and secure.
+     * - Strict Ownership: A user can only read or write data that exists under
+     *   their own unique user ID path (`/users/{request.auth.uid}`).
+     *
+     * Denormalization for Authorization: This ruleset relies on path-based
+     * security, which is a form of denormalization where the owner's ID is part
+     * of the document path. For documents in subcollections, we also enforce that
+     * an internal `userId` field matches the `userId` from the path on creation,
+     * ensuring relational integrity.
+     *
+     * Structural Segregation: User-specific data like `gameSessions` and
+     * `aiRecommendations` are placed in separate subcollections under the user's
+     * main document. This is a secure and efficient pattern that simplifies rules
+     * for list operations.
+     */
+
+    // =====================================================================
+    // Helper Functions
+    // =====================================================================
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user's UID matches the provided userId.
+     * This is the foundation of the ownership model.
+     * @param userId The user ID to check against the authenticated user.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks for ownership on an existing document. Used for update and delete
+     * operations to prevent acting on non-existent data.
+     * @param userId The user ID to check against the authenticated user.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    // =====================================================================
+    // Collection: users
+    // =====================================================================
+
+    /**
+     * @description Rules for the UserProfile document.
+     * @path /users/{userId}
+     * @allow (create) An authenticated user creating their own profile document.
+     * @deny  (list) Any user, authenticated or not, trying to list all user profiles.
+     * @deny  (update) A user trying to update another user's profile.
+     * @principle A user can create, read, update, and delete their own profile, but cannot see or interact with any other user's profile. Listing all users is forbidden for privacy.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+
+      // =====================================================================
+      // Subcollection: gameSessions
+      // =====================================================================
+
+      /**
+       * @description Rules for a user's private game session data.
+       * @path /users/{userId}/gameSessions/{gameSessionId}
+       * @allow (create) An authenticated user adding a new game session to their own profile.
+       * @allow (list) An authenticated user listing their own past game sessions.
+       * @deny  (get) A user trying to read a game session belonging to another user.
+       * @principle Restricts all access to the user specified in the path, enforcing strict data ownership for this subcollection.
+       */
+      match /gameSessions/{gameSessionId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+
+      // =====================================================================
+      // Subcollection: aiRecommendations
+      // =====================================================================
+
+      /**
+       * @description Rules for a user's private AI recommendations.
+       * @path /users/{userId}/aiRecommendations/{aiRecommendationId}
+       * @allow (get) An authenticated user reading a recommendation they received.
+       * @allow (list) An authenticated user listing all their recommendations.
+       * @deny  (create) A user trying to create a recommendation for another user.
+       * @principle Restricts all access to the user specified in the path, enforcing strict data ownership for this subcollection.
+       */
+      match /aiRecommendations/{aiRecommendationId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+      
+      // =====================================================================
+      // Subcollection: feedbackNotes
+      // =====================================================================
+
+      /**
+       * @description Rules for a user's private feedback notes from parents.
+       * @path /users/{userId}/feedbackNotes/{feedbackNoteId}
+       * @allow (create) An authenticated user adding a new feedback note for their child.
+       * @allow (list) An authenticated user listing their own feedback notes.
+       * @deny  (get) A user trying to read feedback notes belonging to another user.
+       * @principle Restricts all access to the user specified in the path, enforcing strict data ownership for this subcollection.
+       */
+      match /feedbackNotes/{feedbackNoteId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+      
+      // =====================================================================
+      // Subcollection: weeklyProgress
+      // =====================================================================
+
+      /**
+       * @description Rules for a user's weekly skill progress snapshots.
+       * @path /users/{userId}/weeklyProgress/{weekId}
+       * @allow (create, list, get) An authenticated user can manage their own progress snapshots.
+       * @principle Restricts all access to the user specified in the path, enforcing strict data ownership for this subcollection.
+       */
+      match /weeklyProgress/{weekId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update: if isExistingOwner(userId);
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+  }
+}

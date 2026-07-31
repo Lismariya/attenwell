@@ -1,0 +1,35 @@
+{
+  "name": "AttenWell",
+  "short_name": "AttenWell",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EEEEEE",
+  "theme_color": "#64B5F6",
+  "description": "A collection of fun games to help kids with ADHD improve their cognitive skills.",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/Qx2CPHmw/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.postimg.cc/Qx2CPHmw/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.postimg.cc/Qx2CPHmw/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://i.postimg.cc/Qx2CPHmw/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

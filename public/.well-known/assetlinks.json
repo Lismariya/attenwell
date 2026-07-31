@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.hosted.us_central1.studio__theyyam_6119b.twa",
+      "sha256_cert_fingerprints": [
+        "26:8C:23:87:64:A2:E7:45:FE:0F:BA:A0:E0:BC:1C:07:B0:39:D0:BA:3C:95:12:AB:CB:61:31:36:5F:56:52:67"
+      ]
+    }
+  }
+]

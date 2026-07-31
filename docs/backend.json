@@ -1,0 +1,421 @@
+
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user profile within the BrainBoost Buddies application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user profile."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The display name of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user.",
+          "format": "email"
+        },
+        "age": {
+          "type": "number",
+          "description": "The age of the user."
+        },
+        "dateJoined": {
+          "type": "string",
+          "description": "The date and time when the user joined the application.",
+          "format": "date-time"
+        },
+        "progressLastResetAt": {
+            "type": "string",
+            "description": "The date and time when the user's progress was last reset.",
+            "format": "date-time"
+        },
+        "coin": {
+          "type": "number",
+          "description": "The number of coins the user has collected."
+        },
+        "kid_level": {
+          "type": "number",
+          "description": "The user's current level in the app."
+        },
+        "cycleProgress": {
+          "type": "object",
+          "description": "Tracks completion of activities for the current kid level cycle.",
+          "properties": {
+            "noise-ninjas": {
+              "type": "boolean",
+              "description": "Completed Noise Ninjas in current cycle."
+            },
+            "track-the-ball": {
+              "type": "boolean",
+              "description": "Completed Track the Ball in current cycle."
+            },
+            "catch-the-right-one": {
+              "type": "boolean",
+              "description": "Completed Catch the Right One in current cycle."
+            },
+            "memory-match": {
+              "type": "boolean",
+              "description": "Completed Memory Match in current cycle."
+            },
+            "hit-the-monster": {
+              "type": "boolean",
+              "description": "Completed Hit the Monster in current cycle."
+            },
+            "jigsaw-puzzle": {
+              "type": "boolean",
+              "description": "Completed Jigsaw Puzzle in current cycle."
+            },
+            "meditation": {
+              "type": "boolean",
+              "description": "Completed Meditation in current cycle."
+            },
+            "focus-session": {
+              "type": "boolean",
+              "description": "Completed Focus Session in current cycle."
+            }
+          },
+          "required": [
+            "noise-ninjas",
+            "track-the-ball",
+            "catch-the-right-one",
+            "memory-match",
+            "hit-the-monster",
+            "jigsaw-puzzle",
+            "meditation",
+            "focus-session"
+          ]
+        },
+        "gameProgress": {
+          "type": "object",
+          "description": "Tracks the highest level completed for each game.",
+          "properties": {
+            "noise-ninjas": {
+              "type": "number",
+              "description": "Highest level completed in Noise Ninjas."
+            },
+            "track-the-ball": {
+              "type": "number",
+              "description": "Highest level completed in Track the Ball."
+            },
+            "catch-the-right-one": {
+              "type": "number",
+              "description": "Highest level completed in Catch the Right One."
+            },
+            "memory-match": {
+              "type": "number",
+              "description": "Highest level completed in Memory Match."
+            },
+            "hit-the-monster": {
+              "type": "number",
+              "description": "Highest level completed in Hit the Monster."
+            },
+            "jigsaw-puzzle": {
+              "type": "number",
+              "description": "Highest level completed in Jigsaw Puzzle."
+            }
+          },
+          "required": [
+            "noise-ninjas",
+            "track-the-ball",
+            "catch-the-right-one",
+            "memory-match",
+            "hit-the-monster",
+            "jigsaw-puzzle"
+          ]
+        },
+        "mpin": {
+          "type": "string",
+          "description": "A 4-digit numeric PIN for parent dashboard access."
+        },
+        "gender": {
+          "type": "string",
+          "description": "The gender of the user.",
+          "enum": [
+            "male",
+            "female"
+          ]
+        },
+        "avatarUrl": {
+          "type": "string",
+          "description": "URL for the user's selected avatar."
+        }
+      },
+      "required": [
+        "id",
+        "displayName",
+        "email",
+        "dateJoined",
+        "age",
+        "coin",
+        "kid_level",
+        "mpin",
+        "gender",
+        "avatarUrl",
+        "cycleProgress",
+        "gameProgress"
+      ]
+    },
+    "GameSession": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "GameSession",
+      "type": "object",
+      "description": "Represents a single session of a game played by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the game session."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile who played this session. (Relationship: UserProfile 1:N GameSession)"
+        },
+        "gameName": {
+          "type": "string",
+          "description": "The name of the game played during this session (e.g., Noise Ninjas)."
+        },
+        "startTime": {
+          "type": "string",
+          "description": "The date and time when the game session started.",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "The date and time when the game session ended.",
+          "format": "date-time"
+        },
+        "score": {
+          "type": "number",
+          "description": "The score achieved by the user in this game session."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "gameName",
+        "startTime",
+        "endTime",
+        "score"
+      ]
+    },
+    "AiRecommendation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AiRecommendation",
+      "type": "object",
+      "description": "Represents an AI-generated recommendation for a specific user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the AI recommendation."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile who received this recommendation. (Relationship: UserProfile 1:N AiRecommendation)"
+        },
+        "gameName": {
+          "type": "string",
+          "description": "The name of the game recommended by the AI."
+        },
+        "reason": {
+          "type": "string",
+          "description": "The reason provided by the AI for recommending this game."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The date and time when the recommendation was generated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "gameName",
+        "reason",
+        "timestamp"
+      ]
+    },
+    "FeedbackNote": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FeedbackNote",
+      "type": "object",
+      "description": "Represents a feedback note written by a parent about the child's progress.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the feedback note."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile this note is about."
+        },
+        "note": {
+          "type": "string",
+          "description": "The content of the feedback note."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The date and time when the note was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "note",
+        "timestamp"
+      ]
+    },
+    "WeeklyProgress": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "WeeklyProgress",
+      "type": "object",
+      "description": "A snapshot of a user's calculated skill progress for a specific week.",
+      "properties": {
+        "weekId": {
+          "type": "string",
+          "description": "Identifier for the week, e.g., '2024-W28'."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The date and time when the snapshot was created.",
+          "format": "date-time"
+        },
+        "attention": {
+          "type": "number",
+          "description": "Calculated score for attention skill."
+        },
+        "working_memory": {
+          "type": "number",
+          "description": "Calculated score for working memory skill."
+        },
+        "inhibitory_control": {
+          "type": "number",
+          "description": "Calculated score for inhibitory control skill."
+        },
+        "problem_solving": {
+          "type": "number",
+          "description": "Calculated score for problem solving skill."
+        }
+      },
+      "required": [
+        "weekId",
+        "timestamp",
+        "attention",
+        "working_memory",
+        "inhibitory_control",
+        "problem_solving"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profile information. The 'userId' parameter is the unique identifier for each user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/gameSessions/{gameSessionId}",
+        "definition": {
+          "entityName": "GameSession",
+          "schema": {
+            "$ref": "#/backend/entities/GameSession"
+          },
+          "description": "Stores game session data for a specific user. The 'userId' parameter identifies the user, and 'gameSessionId' is the unique identifier for each game session. Enforces path-based ownership for access control.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "gameSessionId",
+              "description": "The unique identifier of the game session."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/aiRecommendations/{aiRecommendationId}",
+        "definition": {
+          "entityName": "AiRecommendation",
+          "schema": {
+            "$ref": "#/backend/entities/AiRecommendation"
+          },
+          "description": "Stores AI-generated recommendations for a specific user. 'userId' identifies the user, and 'aiRecommendationId' is the unique identifier for each recommendation. Enforces path-based ownership for access control.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "aiRecommendationId",
+              "description": "The unique identifier of the AI recommendation."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/feedbackNotes/{feedbackNoteId}",
+        "definition": {
+          "entityName": "FeedbackNote",
+          "schema": {
+            "$ref": "#/backend/entities/FeedbackNote"
+          },
+          "description": "Stores parent-written feedback notes about a specific user. 'userId' identifies the user, and 'feedbackNoteId' is the unique identifier for each note. Enforces path-based ownership for access control.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "feedbackNoteId",
+              "description": "The unique identifier of the feedback note."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/weeklyProgress/{weekId}",
+        "definition": {
+          "entityName": "WeeklyProgress",
+          "schema": {
+            "$ref": "#/backend/entities/WeeklyProgress"
+          },
+          "description": "Stores weekly snapshots of the user's skill progress. 'weekId' is a unique identifier for the week (e.g., YYYY-WW).",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "weekId",
+              "description": "The unique identifier for the weekly snapshot."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to securely store user profiles, game sessions, and AI recommendations for the BrainBoost Buddies application. It leverages path-based ownership for user-related data to simplify security rules and ensure data isolation. Specifically, each user's game sessions and AI recommendations are stored under their respective user ID, allowing for easy access control. This approach avoids complex queries and ensures that users can only access their own data. This enforces Authorization Independence, as access control is determined solely by the path and the authenticated user's ID, eliminating the need for `get()` calls in security rules. The segregation of user data into individual subcollections also enables secure list operations (QAPs) as security rules can be applied directly to these subcollections without needing to filter based on document content."
+  }
+}

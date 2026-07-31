@@ -1,0 +1,28 @@
+{
+  "placeholderImages": [
+    {
+      "id": "jigsaw-puzzle",
+      "description": "A colorful cartoon dragon.",
+      "imageUrl": "https://cdn.pixabay.com/photo/2022/08/27/12/02/dragon-7414336_1280.jpg",
+      "imageHint": "cartoon dragon"
+    },
+    {
+      "id": "jigsaw-puzzle-2",
+      "description": "A cute robot waving.",
+      "imageUrl": "https://cdn.pixabay.com/photo/2024/04/20/14/40/ai-generated-8708710_1280.jpg",
+      "imageHint": "cute robot"
+    },
+    {
+      "id": "jigsaw-puzzle-3",
+      "description": "A cute penguin character.",
+      "imageUrl": "https://cdn.pixabay.com/photo/2025/11/20/01/16/penguin-9966285_1280.jpg",
+      "imageHint": "penguin character"
+    },
+    {
+      "id": "jigsaw-puzzle-4",
+      "description": "A toy robot on a wooden surface.",
+      "imageUrl": "https://cdn.pixabay.com/photo/2018/12/23/09/45/toy-3890797_1280.jpg",
+      "imageHint": "toy robot"
+    }
+  ]
+}
